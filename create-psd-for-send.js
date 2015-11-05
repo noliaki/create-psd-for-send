@@ -39,15 +39,15 @@
 
       if( !_layers[i].visible ){
         toRemoveLayers.push(_layers[i]);
-      }
+      } else {
 
-      if( _layers[i].kind === LayerKind.SMARTOBJECT ){
-        _layers[i].rasterize(RasterizeType.ENTIRELAYER);
-      }
+        if( _layers[i].kind === LayerKind.SMARTOBJECT ){
+          _layers[i].rasterize(RasterizeType.ENTIRELAYER);
+        }
 
-      if( _layers[i].typename === 'LayerSet' && _layers[i].visible ){
-        filterLayer( _layers[i].layers );
-        // alert( _layers[i].name );
+        if( _layers[i].typename === 'LayerSet' ){
+          filterLayer( _layers[i].layers );
+        }
       }
     }
   }
