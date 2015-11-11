@@ -3,7 +3,6 @@
 
   var fileName = '',
       currentPath = activeDocument.path,
-      rootLayers,
       toRemoveLayers = [],
       jpegOpt  = new JPEGSaveOptions();
 
@@ -20,13 +19,14 @@
   }
 
   activeDocument.duplicate( fileName );
-
-  rootLayers = activeDocument.layers;
-
-  filterLayer(rootLayers);
+  filterLayer(activeDocument.layers);
 
   for(var i = 0, rLen = toRemoveLayers.length; i < rLen; i ++){
-    toRemoveLayers[i].remove();
+    try {
+      toRemoveLayers[i].remove();
+    } catch(event){
+
+    }
   }
 
   activeDocument.saveAs( new File(currentPath + '/' + fileName.replace(/(\.psd)$/, '.jpg')), jpegOpt, true, Extension.LOWERCASE );
@@ -38,14 +38,13 @@
     for(var i = 0, len = _layers.length; i < len; i ++){
 
       if( !_layers[i].visible ){
-        toRemoveLayers.push(_layers[i]);
+        if( !_layers[i].allLocked ){
+          toRemoveLayers.push(_layers[i]);
+        }
       } else {
-
         if( _layers[i].kind === LayerKind.SMARTOBJECT ){
           _layers[i].rasterize(RasterizeType.ENTIRELAYER);
-        }
-
-        if( _layers[i].typename === 'LayerSet' ){
+        } else if( _layers[i].typename === 'LayerSet' ){
           filterLayer( _layers[i].layers );
         }
       }
