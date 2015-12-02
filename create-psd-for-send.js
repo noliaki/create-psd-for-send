@@ -4,19 +4,10 @@
   var fileName = '',
       currentPath = activeDocument.path,
       toRemoveLayers = [],
-      jpegOpt  = new JPEGSaveOptions();
+      today = new Date(),
+      suffix = '_' + (today.getMonth() + 1) + today.getDate();
 
-  jpegOpt.embedColorProfile = true;
-  jpegOpt.quality           = 12;
-  jpegOpt.formatOptions     = FormatOptions.PROGRESSIVE;
-  jpegOpt.scans             = 3;
-  jpegOpt.matte             = MatteType.NONE;
-
-  if( /(-for_send\.psd)$/i.test(activeDocument.name) ){
-    fileName = activeDocument.name;
-  } else {
-    fileName = activeDocument.name.replace(/(\.psd)$/, '-for_send.psd');
-  }
+  fileName = activeDocument.name.replace(/(\.psd)$/, suffix + '.psd');
 
   activeDocument.duplicate( fileName );
   filterLayer(activeDocument.layers);
@@ -29,7 +20,6 @@
     }
   }
 
-  activeDocument.saveAs( new File(currentPath + '/' + fileName.replace(/(\.psd)$/, '.jpg')), jpegOpt, true, Extension.LOWERCASE );
   activeDocument.saveAs( new File(currentPath + '/' + fileName) );
   activeDocument.close(SaveOptions.SAVECHANGES);
 
